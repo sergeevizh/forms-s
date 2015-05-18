@@ -145,11 +145,11 @@ function form_template_print_box($post) {
  
 [/form-cp]';
 $args = array('media_buttons' => 0);
-if($post->content==''){
+if($post->post_content==''){
     wp_editor($content,'content',$args);
 }
     else{
-        wp_editor($post->content,'content',$args);
+        wp_editor($post->post_content,'content',$args);
     }
 }
 
