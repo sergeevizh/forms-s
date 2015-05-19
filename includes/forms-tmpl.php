@@ -124,11 +124,12 @@ function cp_callback_print_box($post) {
     echo '<input type = "text" readonly = "readonly" onfocus="this.select();" value = "[form-s id=&quot;'.$post->ID.'&quot;]" >';
 }
 
-function form_template_meta_boxes() {
+function template_meta_boxes() {
     add_meta_box('form_template', 'Шаблон формы', 'form_template_print_box', 'form_tmpl_s', 'normal', 'high');
+    add_meta_box('notice_template','Шаблон уведомления','notice_template_print_box','form_tmpl_s','normal','high');
 }
  
-add_action( 'add_meta_boxes', 'form_template_meta_boxes');
+add_action( 'add_meta_boxes', 'template_meta_boxes');
  
 function form_template_print_box($post) {
     $content='[form-cp spam_protect=1]
@@ -153,12 +154,32 @@ if($post->post_content==''){
     }
 }
 
+function notice_template_print_box($post){
+    $content='[field-fs key="name"]
+[field-fs key="tel"]
+[field-fs key="email"]
+[field-fs key="comment"]';
+    $args = array('media_buttons' => 0);
+    if(get_post_meta($post->ID,'notice_template',true)==''){
+        wp_editor($content,'notice_template',$args);
+    }
+    else{
+        wp_editor(get_post_meta($post->ID,'notice_template',true),'notice_template',$args);
+    }
+    $emails.='<br><label>Адреса: <input type="text" name="emails" value="'. get_post_meta($post->ID,'emails',true) .'" /></label> ';
+    echo $emails;
+}
+
 function save_form_tmpl_s_content($post_id){
+        update_post_meta($post_id, 'notice_template', sanitize_text_field( $_REQUEST['notice_template']));
+        update_post_meta($post_id, 'emails', esc_attr($_POST['emails']));
         remove_action( 'save_post_form_tmpl_s', 'save_form_tmpl_s_content' );
         wp_update_post( array( 'ID' => $post_id, 'post_content' => sanitize_text_field( $_REQUEST['content'])));
         add_action( 'save_post_form_tmpl_s', 'save_form_tmpl_s_content' );
 }
 add_action( 'save_post_form_tmpl_s', 'save_form_tmpl_s_content' );
+
+
 
 //удаление пункта таксономии из подменю Сообщения
 /*

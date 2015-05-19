@@ -14,7 +14,7 @@ function check_new_msg_and_send_callback() {
 		);
 		if($mailcheck) {
 			wp_update_post(array('ID' => $msg->ID, 'post_status' => 'publish'));
-			update_post_meta($msg->ID,'meta_label','2');
+			update_post_meta($msg->ID,'email_send','2');
 		}
 	}
 }
