@@ -155,10 +155,7 @@ if($post->post_content==''){
 }
 
 function notice_template_print_box($post){
-    $content='[field-fs key="name"]
-[field-fs key="tel"]
-[field-fs key="email"]
-[field-fs key="comment"]';
+    $content='[[name]] [[tel]] [[email]] [[comment]]';
     $args = array('media_buttons' => 0);
     if(get_post_meta($post->ID,'notice_template',true)==''){
         wp_editor($content,'notice_template',$args);

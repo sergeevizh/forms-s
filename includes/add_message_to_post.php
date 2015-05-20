@@ -27,15 +27,30 @@ function add_message_to_posts(){
 		add_post_meta($post_id, 'meta_' . $key, $value);
 	endforeach;
 	$content_data = null;
+	//Шаблон уведомления
+	$notice_template_data="[[name]] [[tel]] [[email]] [[comment]]";
 	foreach($data_form as $key => $value):
 		add_post_meta($post_id, $key, $value);
-		$content_data .= "
+	    if(empty($notice_template_data)){
+	    	$content_data .= "
 			<div>
 				<div><strong>" . get_post_meta($post_id, 'meta_'.$key, true) . "</strong></div>".
 				"<div>" . get_post_meta($post_id, $key, true) . "</div>
 			</div>
 			<hr/>";
+	    }
 	endforeach;
+    //Заполнение по шаблону уведомления
+	if(preg_match_all('|\[\[(.+)\]\]|isU',$notice_template_data,$arr)){
+		foreach ($arr[1] as $value):
+			$content_data .= "
+			<div>
+				<div><strong>" . get_post_meta($post_id, 'meta_'.$value, true) . "</strong></div>".
+				"<div>" . get_post_meta($post_id, $value, true) . "</div>
+			</div>
+			<hr/>";
+	    endforeach;
+	}
 
 	$post_data = array(
 		'ID' => $post_id, 
