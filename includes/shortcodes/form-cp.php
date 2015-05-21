@@ -15,8 +15,15 @@ function cpform_func( $cp_atts, $content){
 		'class' => '',
 		'id' => '',
 	), $cp_atts, 'form-cp' ));
-  	if($email_to) $email_to = get_bloginfo('admin_email');;
-	
+  	if($email_to){
+  		$meta_emails=get_post_meta($GLOBALS['template_post_id'],'emails',true);
+  		if(!empty($meta_emails)){
+  			$email_to=$meta_emails;
+  		}
+  		else{
+  			$email_to = get_bloginfo('admin_email');
+  		}
+	}
   	$spam_protect_html = get_spam_protect_html($spam_protect);
  	ob_start();
  	?>
@@ -28,6 +35,7 @@ function cpform_func( $cp_atts, $content){
 			<input type="hidden" value="<?php echo $email_to ?>" name="meta_data_form_cp[email_to]">
 			<?php if (defined ("forms_tmpl_include") && forms_tmpl_include == 1):?>
 				<input type="hidden" value="<?php echo $GLOBALS['post_id_for_taxonomy'] ?>" name="meta_data_form_cp[parent_post_id]">
+				<input type="hidden" value="<?php echo $GLOBALS['template_post_id']; ?>" name="meta_data_form_cp[template_post_id]">
 			<?php endif;?>
 			<?php echo $spam_protect_html; ?>
 		</form>

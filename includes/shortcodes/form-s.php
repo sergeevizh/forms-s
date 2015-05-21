@@ -15,6 +15,8 @@ function form_s_shortcode( $atts ){
 
         $post_id_for_taxonomy = $post->post_title;
         $GLOBALS['post_id_for_taxonomy'] = $post_id_for_taxonomy;
+        $template_post_id = $post->ID;
+        $GLOBALS['template_post_id'] = $template_post_id;
         echo do_shortcode($post->post_content);
 
     }else{

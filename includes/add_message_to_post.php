@@ -21,6 +21,7 @@ function add_message_to_posts(){
 	if (defined ("forms_tmpl_include") && forms_tmpl_include == 1) {
 		$parent_post_name = strval($_REQUEST['meta_data_form_cp']['parent_post_id']);
 		wp_set_object_terms($post_id, $parent_post_name, 'form_tag_s', true);
+		$template_post_id= intval($_REQUEST['meta_data_form_cp']['template_post_id']);
 	}
 	//Записываем меты
 	foreach($meta_data_form as $key => $value):
@@ -28,7 +29,7 @@ function add_message_to_posts(){
 	endforeach;
 	$content_data = null;
 	//Шаблон уведомления
-	$notice_template_data="[[name]] [[tel]] [[email]] [[comment]]";
+	$notice_template_data=get_post_meta($template_post_id,'notice_template', true);
 	foreach($data_form as $key => $value):
 		add_post_meta($post_id, $key, $value);
 	    if(empty($notice_template_data)){
@@ -41,16 +42,12 @@ function add_message_to_posts(){
 	    }
 	endforeach;
     //Заполнение по шаблону уведомления
-	if(preg_match_all('|\[\[(.+)\]\]|isU',$notice_template_data,$arr)){
-		foreach ($arr[1] as $value):
-			$content_data .= "
-			<div>
-				<div><strong>" . get_post_meta($post_id, 'meta_'.$value, true) . "</strong></div>".
-				"<div>" . get_post_meta($post_id, $value, true) . "</div>
-			</div>
-			<hr/>";
-	    endforeach;
+    if(preg_match_all('|\[\[(.+)\]\]|isU',$notice_template_data,$arr)){
+		for ($i=0; $i < count($arr[0]) ; $i++) { 
+			$notice_template_data=str_replace($arr[0][i], get_post_meta($post_id,$arr[1][i],true), $notice_template_data);
+		}
 	}
+	$content_data.=$notice_template_data;
 
 	$post_data = array(
 		'ID' => $post_id, 

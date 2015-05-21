@@ -6,9 +6,9 @@ add_filter( 'wp_mail_content_type', 'set_html_content_type_cp' );
 function check_new_msg_and_send_callback() {
 	$posts = get_posts('post_type=message_cp&post_status=draft');
 	foreach ($posts as $msg) {
-		$email = get_post_meta($msg->ID, 'meta_email_to', true);
+		$emails = explode(', ',get_post_meta($msg->ID, 'meta_email_to', true));
 		$mailcheck = wp_mail( 
-		$email, 
+		$emails, 
 		$msg->post_title, 
 		$msg->post_content
 		);

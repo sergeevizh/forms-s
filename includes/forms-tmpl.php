@@ -155,7 +155,10 @@ if($post->post_content==''){
 }
 
 function notice_template_print_box($post){
-    $content='[[name]] [[tel]] [[email]] [[comment]]';
+    $content='[[name]]
+[[tel]]
+[[email]]
+[[comment]]';
     $args = array('media_buttons' => 0);
     if(get_post_meta($post->ID,'notice_template',true)==''){
         wp_editor($content,'notice_template',$args);
@@ -168,10 +171,10 @@ function notice_template_print_box($post){
 }
 
 function save_form_tmpl_s_content($post_id){
-        update_post_meta($post_id, 'notice_template', sanitize_text_field( $_REQUEST['notice_template']));
+        update_post_meta($post_id, 'notice_template', $_REQUEST['notice_template']);
         update_post_meta($post_id, 'emails', esc_attr($_POST['emails']));
         remove_action( 'save_post_form_tmpl_s', 'save_form_tmpl_s_content' );
-        wp_update_post( array( 'ID' => $post_id, 'post_content' => sanitize_text_field( $_REQUEST['content'])));
+        wp_update_post( array( 'ID' => $post_id, 'post_content' => $_REQUEST['content']));
         add_action( 'save_post_form_tmpl_s', 'save_form_tmpl_s_content' );
 }
 add_action( 'save_post_form_tmpl_s', 'save_form_tmpl_s_content' );
